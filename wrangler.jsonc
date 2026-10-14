@@ -1,0 +1,12 @@
+{
+  "name": "aven",
+  "account_id": "83ca0df9ab694da04a8bab6db7344a1d",
+  "compatibility_date": "2026-10-14",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "traces": {
+      "enabled": true
+    }
+  }
+}

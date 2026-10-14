@@ -1,0 +1,177 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@plugin "@tailwindcss/typography";
+
+@theme static {
+    --font-sans: 'Outfit', 'Noto Sans Tamil', sans-serif;
+
+    --color-aven-50: #FBF8F4;
+    --color-aven-100: #F3F0EA;
+    --color-aven-200: #E9E0D4;
+    --color-aven-300: #D9CBBA;
+    --color-aven-400: #C4A88A;
+    --color-aven-500: #8C5E3C;
+    --color-aven-600: #734C31;
+    --color-aven-700: #5C3C27;
+    --color-aven-800: #3D2718;
+    --color-aven-900: #2A1C14;
+    --color-aven-950: #1A110C;
+}
+
+:root {
+    --ui-bg: var(--color-aven-200);
+    --ui-bg-muted: var(--color-aven-100);
+    --ui-bg-elevated: var(--color-aven-50);
+    --ui-bg-accented: var(--color-aven-300);
+    --ui-bg-inverted: var(--color-aven-900);
+    --ui-text: var(--color-aven-900);
+    --ui-text-dimmed: #8A7364;
+    --ui-text-muted: #6B5344;
+    --ui-text-toned: #4A382C;
+    --ui-text-highlighted: var(--color-aven-900);
+    --ui-border: var(--color-aven-300);
+    --ui-border-muted: #E4D9CC;
+    --ui-border-accented: var(--color-aven-400);
+    --ui-radius: 0.75rem;
+}
+
+@keyframes aven-mark-in {
+    from {
+        opacity: 0;
+        transform: translateY(0.4em);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes aven-fade {
+    from {
+        opacity: 0;
+        transform: translateY(0.65rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes aven-settle {
+    from {
+        transform: scale(1.045);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+.aven-letter {
+    display: inline-block;
+    animation: aven-mark-in 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.aven-fade {
+    animation: aven-fade 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.aven-hero-image {
+    animation: aven-settle 1.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aven-hero-frame:hover .aven-hero-image,
+.aven-hero-frame:focus-visible .aven-hero-image {
+    transform: scale(1.03);
+}
+
+.aven-shop {
+    display: inline-flex;
+    width: max-content;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ui-text-highlighted);
+}
+
+.aven-shop:focus-visible {
+    outline: 2px solid var(--ui-text);
+    outline-offset: 6px;
+}
+
+.aven-shop-line {
+    height: 1px;
+    width: 100%;
+    transform: scaleX(0.4);
+    transform-origin: left;
+    background: currentColor;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aven-shop-arrow {
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aven-shop:hover .aven-shop-line,
+.aven-shop:focus-visible .aven-shop-line {
+    transform: scaleX(1);
+}
+
+.aven-shop:hover .aven-shop-arrow,
+.aven-shop:focus-visible .aven-shop-arrow {
+    transform: translateX(0.25rem);
+}
+
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+    .aven-reveal:not(.is-visible) {
+        opacity: 0;
+        transform: translateY(1.05rem);
+    }
+}
+
+.aven-reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition:
+        opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aven-edit img {
+    transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.aven-edit a:hover img,
+.aven-edit a:focus-visible img {
+    transform: scale(1.035);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .aven-letter,
+    .aven-fade,
+    .aven-hero-image,
+    .aven-reveal,
+    .aven-shop-line,
+    .aven-shop-arrow,
+    .aven-edit img,
+    .aven-hero-frame:hover .aven-hero-image,
+    .aven-hero-frame:focus-visible .aven-hero-image,
+    .aven-edit a:hover img,
+    .aven-edit a:focus-visible img,
+    .aven-shop:hover .aven-shop-line,
+    .aven-shop:focus-visible .aven-shop-line,
+    .aven-shop:hover .aven-shop-arrow,
+    .aven-shop:focus-visible .aven-shop-arrow {
+        animation: none;
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
