@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { findEdit, looksFor } from '~/data/catalog'
+
 definePageMeta({
   validate: route => typeof route.params.handle === 'string',
 })
@@ -33,7 +35,10 @@ const { data: collection, error } = await useStorefrontData(key, `#graphql
   cache: 'long',
 })
 
-if (!collection.value || error.value) {
+const edit = findEdit(handle.value)
+const editLooks = edit ? looksFor(edit) : []
+
+if ((!collection.value || error.value) && !edit) {
   throw createError({
     status: 404,
     statusText: `${$t('error.notFound')}: ${route.fullPath}`,
@@ -43,8 +48,8 @@ if (!collection.value || error.value) {
 }
 
 useSeoMeta({
-  title: `${collection.value?.title} | ${shopName}`,
-  description: collection.value?.description ?? $t('seo.description'),
+  title: `${collection.value?.title ?? (edit ? $t(`catalog.edits.${edit.handle}.title`) : '')} | ${shopName}`,
+  description: collection.value?.description ?? (edit ? $t(`catalog.edits.${edit.handle}.description`) : $t('seo.description')),
 })
 </script>
 
@@ -53,23 +58,37 @@ useSeoMeta({
     <UBreadcrumb
       :items="[
         { label: $t('breadcrumb.collections') },
-        { label: collection?.title, to: localePath(`/collection/${handle}`) },
+        { label: collection?.title ?? (edit ? $t(`catalog.edits.${edit.handle}.title`) : ''), to: localePath(`/collection/${handle}`) },
       ]"
       class="mb-6 lg:mb-8"
     />
 
     <h1 class="mb-6 text-2xl font-semibold uppercase tracking-[0.12em] text-highlighted lg:mb-8 lg:text-3xl">
-      {{ collection?.title }}
+      {{ collection?.title ?? (edit ? $t(`catalog.edits.${edit.handle}.title`) : '') }}
     </h1>
 
     <p class="mb-8 max-w-md text-toned lg:mb-10 lg:text-lg">
-      {{ collection?.description }}
+      {{ collection?.description ?? (edit ? $t(`catalog.edits.${edit.handle}.description`) : '') }}
     </p>
 
-    <CollectionProducts :handle="handle" />
+    <div
+      v-if="edit && !collection?.id"
+      class="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5"
+    >
+      <CatalogCard
+        v-for="item in editLooks"
+        :key="item.handle"
+        :look="item"
+      />
+    </div>
+
+    <CollectionProducts
+      v-else
+      :handle="handle"
+    />
 
     <ShopifyCollectionView
-      v-if="collection"
+      v-if="collection?.id"
       :data="{ collection: { id: collection.id, handle } }"
     />
   </UContainer>

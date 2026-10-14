@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { looks } from '~/data/catalog'
+
 const { shopify: { shopName } } = useAppConfig()
 const localePath = useLocalePath()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { params: localization } = useLocalization()
 
 const letters = computed(() => t('home.title').split(''))
@@ -28,8 +30,11 @@ const { data: edit } = await useStorefrontData(localizedKey('home-edit'), `#grap
   cache: 'long',
 })
 
-const lead = computed(() => edit.value?.[0])
-const row = computed(() => edit.value?.slice(1) ?? [])
+const products = computed(() => Array.isArray(edit.value) ? edit.value : [])
+const lead = computed(() => products.value[0])
+const row = computed(() => products.value.slice(1))
+const leadLook = looks[0]!
+const rowLooks = looks.slice(1)
 
 const leadImage = computed(() => {
   const product = lead.value
@@ -39,6 +44,11 @@ const leadImage = computed(() => {
 })
 
 const leadPrice = computed(() => lead.value ? displayPrice(lead.value) : undefined)
+const leadLookPrice = computed(() => new Intl.NumberFormat(locale.value, {
+  style: 'currency',
+  currency: 'INR',
+  maximumFractionDigits: 0,
+}).format(leadLook.amount))
 
 useSeoMeta({
   title: `${shopName} | ${t('home.tagline')}`,
@@ -126,6 +136,32 @@ useSeoMeta({
           />
         </span>
       </NuxtLink>
+
+      <NuxtLink
+        v-else
+        :to="localePath(`/product/${leadLook.handle}`)"
+        class="aven-hero-frame group relative flex min-h-[72vw] items-end overflow-hidden bg-elevated sm:min-h-[28rem] lg:min-h-0"
+        :aria-label="`${t('product.view')}: '${leadLook.title}'`"
+      >
+        <div class="absolute inset-0 p-8 pb-24 sm:p-14 sm:pb-28">
+          <CatalogTee
+            class="aven-hero-image"
+            style="animation-delay: 0.2s"
+            :shirt="leadLook.shirt"
+            :ink="leadLook.ink"
+            mark
+          />
+        </div>
+
+        <span class="aven-fade absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-6 border-t border-muted bg-elevated px-6 py-4 sm:px-8" style="animation-delay: 0.95s">
+          <span class="text-[0.68rem] tracking-[0.18em] text-highlighted uppercase">
+            {{ leadLook.title }}
+          </span>
+          <span class="text-sm font-semibold">
+            {{ leadLookPrice }}
+          </span>
+        </span>
+      </NuxtLink>
     </section>
 
     <section
@@ -148,6 +184,27 @@ useSeoMeta({
             :product="product"
             :loading="index < 2 ? 'eager' : 'lazy'"
           />
+        </AppReveal>
+      </div>
+    </section>
+
+    <section
+      v-else
+      class="border-t border-muted px-6 py-16 sm:px-10 lg:px-14 lg:py-24"
+    >
+      <AppReveal>
+        <h2 class="mb-8 text-[0.68rem] tracking-[0.28em] text-muted uppercase lg:mb-10">
+          {{ t('home.products.bestsellers') }}
+        </h2>
+      </AppReveal>
+
+      <div class="aven-edit grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-5">
+        <AppReveal
+          v-for="(look, index) in rowLooks"
+          :key="look.handle"
+          :delay="index * 90"
+        >
+          <CatalogCard :look="look" />
         </AppReveal>
       </div>
     </section>

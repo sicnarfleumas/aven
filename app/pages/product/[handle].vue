@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { findLook } from '~/data/catalog'
+
 definePageMeta({
   validate: route => typeof route.params.handle === 'string',
 })
@@ -31,7 +33,9 @@ const { data, error } = await useStorefrontData(localizedKey('product', handle),
   cache: 'long',
 })
 
-if (!data.value?.product || error.value) {
+const look = findLook(handle.value)
+
+if ((!data.value?.product || error.value) && !look) {
   throw createError({
     status: 404,
     statusText: `${$t('error.notFound')}: ${route.fullPath}`,
@@ -47,8 +51,8 @@ const selectedVariant = ref(flattenConnection(data.value?.product?.variants)
   ?? product.value?.selectedOrFirstAvailableVariant)
 
 useSeoMeta({
-  title: `${product.value?.title} | ${shopName}`,
-  description: product.value?.description ?? $t('seo.description'),
+  title: `${product.value?.title ?? look?.title} | ${shopName}`,
+  description: product.value?.description ?? (look ? $t(`catalog.looks.${look.copy}`) : $t('seo.description')),
 })
 
 watch(selectedVariant, (variant) => {
@@ -66,9 +70,14 @@ watch(selectedVariant, (variant) => {
     <UBreadcrumb
       :items="[
         { label: $t('breadcrumb.products') },
-        { label: product?.title, to: localePath(`/product/${handle}`) },
+        { label: product?.title ?? look?.title, to: localePath(`/product/${handle}`) },
       ]"
       class="mb-6 lg:mb-8"
+    />
+
+    <CatalogProduct
+      v-if="look && !product"
+      :look="look"
     />
 
     <div

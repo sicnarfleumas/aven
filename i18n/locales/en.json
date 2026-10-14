@@ -240,6 +240,30 @@
     "seo": {
         "description": "AVEN — clothing for men."
     },
+    "catalog": {
+        "type": "Tee",
+        "looks": {
+            "everyday": "A relaxed cotton tee with a clean chest mark.",
+            "heavyweight": "A denser knit that holds its shape through the day.",
+            "longline": "A longer body, still easy through the shoulder.",
+            "pocket": "The everyday tee, with a single chest pocket.",
+            "night": "The same cut, dyed down to a deep brown."
+        },
+        "edits": {
+            "tees": {
+                "title": "Tees",
+                "description": "Cotton tees, cut to be worn your way."
+            },
+            "heavyweight": {
+                "title": "Heavyweight",
+                "description": "Denser cotton for a quieter drape."
+            },
+            "essentials": {
+                "title": "Essentials",
+                "description": "The pieces we reach for first."
+            }
+        }
+    },
     "error": {
         "home": "Back to Homepage",
         "notFound": "Page not found",
